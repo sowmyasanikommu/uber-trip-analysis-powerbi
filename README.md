@@ -1,81 +1,203 @@
-# 🚕 Uber Trip Analysis Dashboard | Power BI
+<div align="center">
 
-An end-to-end business intelligence solution built in **Power BI**, analyzing Uber trip data to uncover booking trends, revenue patterns, trip efficiency, and location-based demand — enabling stakeholders to make faster, data-driven operational decisions.
+# 🚕 Uber Trip Analysis Dashboard
+### An End-to-End Power BI Business Intelligence Solution
 
 ![Power BI](https://img.shields.io/badge/Power%20BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
 ![DAX](https://img.shields.io/badge/DAX-217346?style=for-the-badge&logo=microsoft-excel&logoColor=white)
+![Power Query](https://img.shields.io/badge/Power%20Query-217346?style=for-the-badge&logo=microsoft-excel&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Completed-brightgreen?style=for-the-badge)
 
----
-
-## 📌 Project Overview
-
-Uber generates massive volumes of trip data every day — bookings, cancellations, distances, payment types, pickup and drop-off points. Buried in this data are answers to critical business questions: *When does demand peak? Which locations drive the most trips? How efficient are rides in terms of time and distance? Where is revenue being generated, and how?*
-
-This project transforms raw trip-level data into a **3-page interactive Power BI dashboard**, moving from a high-level operational overview down to granular, record-level detail — giving both executives and analysts the view they need.
+</div>
 
 ---
 
-## 🎯 Business Objectives
+## 📑 Table of Contents
 
-- Track booking volume and revenue trends over time
-- Measure trip efficiency (distance & duration)
-- Understand demand patterns by time, day, and location
-- Identify high-value locations and vehicle preferences
-- Enable self-service, drill-through exploration of raw trip records
+1. [Executive Summary](#-executive-summary)
+2. [Business Problem](#-business-problem)
+3. [Solution Architecture](#-solution-architecture)
+4. [Dashboard Walkthrough](#-dashboard-walkthrough)
+5. [Data Dictionary](#-data-dictionary)
+6. [Technical Highlights](#-technical-highlights)
+7. [Key Business Insights](#-key-business-insights)
+8. [Tools & Technologies](#-tools--technologies)
+9. [Repository Structure](#-repository-structure)
+10. [Dashboard Previews](#-dashboard-previews)
+11. [Key Takeaways / Business Impact](#-key-takeaways--business-impact)
+12. [How to Use](#-how-to-use-this-project)
+13. [Future Enhancements](#-future-enhancements)
+14. [Contact](#-contact)
 
 ---
 
-## 📊 Dashboards
+## 📋 Executive Summary
+
+Ride-hailing platforms like Uber generate high-volume, high-frequency operational data — every trip carries information about timing, location, distance, revenue, and vehicle usage. Left as raw transactional records, this data has limited value. Structured correctly, it becomes the backbone of pricing strategy, driver allocation, and demand forecasting.
+
+This project delivers a **three-dashboard Power BI solution** that converts raw Uber trip data into an interactive decision-support tool, purpose-built for three levels of business need:
+
+| Audience | Need | Dashboard |
+|---|---|---|
+| Executives / Stakeholders | Fast, high-level operational health check | **Overview Analysis** |
+| Operations / Demand Planning | Understand *when* demand happens | **Time Analysis** |
+| Analysts | Investigate individual trip records | **Details Tab** |
+
+The result is a single `.pbix` file with **6 core KPIs, a dynamic multi-metric selector, 10+ visuals, drill-through navigation, and interactive bookmarking** — built to Power BI professional standards for modeling, DAX efficiency, and UX design.
+
+---
+
+## 🎯 Business Problem
+
+Uber (or any ride-hailing operator) needs to answer a consistent set of operational questions on an ongoing basis:
+
+- How many trips are being booked, and how is revenue trending?
+- Are trips efficient — i.e., is distance/time reasonable relative to fare?
+- When during the day/week does demand peak, and when does it dip?
+- Which pickup and drop-off locations drive the most volume?
+- Which vehicle types are preferred, and where?
+- How can an analyst quickly investigate an anomaly (e.g., a revenue dip on a specific day) without waiting on a custom report?
+
+**Without a centralized dashboard**, answering these requires manual data pulls, spreadsheet analysis, and delayed turnaround — which slows down operational decisions like pricing adjustments and driver repositioning.
+
+**The objective of this project** was to design a Power BI solution that answers all of the above in a single, interactive, self-service tool — reducing time-to-insight from hours to seconds.
+
+---
+
+## 🏗️ Solution Architecture
+
+```
+                     ┌───────────────────────┐
+                     │   Raw Trip Data        │
+                     │  (CSV / Source System) │
+                     └───────────┬───────────┘
+                                 │
+                                 ▼
+                     ┌───────────────────────┐
+                     │      Power Query        │
+                     │  Cleaning · Shaping ·   │
+                     │  Date/Time Decomposition│
+                     └───────────┬───────────┘
+                                 │
+                                 ▼
+                     ┌───────────────────────┐
+                     │     Data Model          │
+                     │ Fact: Trips             │
+                     │ Dim: Date, Location      │
+                     │ Disconnected: Measures   │
+                     │ (incl. USERELATIONSHIP)  │
+                     └───────────┬───────────┘
+                                 │
+                                 ▼
+                     ┌───────────────────────┐
+                     │   DAX Measure Layer      │
+                     │ KPIs · Dynamic Switches · │
+                     │ Time Intelligence         │
+                     └───────────┬───────────┘
+                                 │
+                                 ▼
+        ┌────────────────────────────────────────────┐
+        │              Power BI Dashboards              │
+        │  1. Overview Analysis   2. Time Analysis        │
+        │  3. Details Tab (Drill-Through + Bookmarks)     │
+        └────────────────────────────────────────────┘
+```
+
+This layered architecture separates concerns cleanly: raw data → cleaning → modeling → calculation logic → presentation. That separation is what makes the dynamic measure selector and drill-through features possible without duplicating visuals or tables.
+
+---
+
+## 📊 Dashboard Walkthrough
 
 ### 1️⃣ Overview Analysis
-The command-center view of the business — key metrics and comparative breakdowns.
+*The executive command center — a single-page operational health check.*
 
-- **Core KPIs:** Total Bookings, Total Booking Value, Average Booking Value, Total Trip Distance, Average Trip Distance, Average Trip Time
-- **Dynamic Measure Selector** — a disconnected-table-driven toggle that lets users switch the entire dashboard's focus between Bookings, Revenue, and Distance, with the chart title updating dynamically to match
-- **Payment Type & Trip Type breakdowns** (Card/Cash/Wallet, Day/Night)
-- **Vehicle Type Performance Grid** — a matrix visual comparing KPIs across vehicle categories, with conditional formatting to instantly flag high/low performers
-- **Total Bookings by Day** — trend and anomaly detection for demand planning
-- **Location Intelligence** — most frequent pickup & drop-off points, farthest trip, top 5 locations by booking volume, and most preferred vehicle type per pickup location
-- **UX Enhancements** — a "Data Details" bookmark panel explaining every metric, a one-click "Clear Filters" reset button, and a raw data export option
+**KPIs:** Total Bookings · Total Booking Value · Average Booking Value · Total Trip Distance · Average Trip Distance · Average Trip Time
+
+**Core Features:**
+- **Dynamic Measure Selector** — a disconnected-table-driven toggle lets any chart on the page switch between Bookings, Revenue, or Distance without duplicating visuals. The chart title updates automatically to reflect the active metric.
+- **Payment Type & Trip Type (Day/Night) breakdowns** — bound to the dynamic measure for flexible comparison
+- **Vehicle Type Performance Grid** — a matrix visual with conditional formatting that flags high/low performers across Total Bookings, Booking Value, Avg Booking Value, and Trip Distance
+- **Total Bookings by Day** — trend visualization for spotting demand spikes, dips, and anomalies
+- **Location Intelligence:**
+  - Most Frequent Pickup Point
+  - Most Frequent Drop-off Point *(requires an activated inactive relationship — see [Technical Highlights](#-technical-highlights))*
+  - Farthest Trip (outlier detection)
+  - Top 5 Locations by Booking Volume
+  - Most Preferred Vehicle Type per Pickup Location
+- **UX Enhancements:**
+  - "Data Details" bookmark — a pop-up panel explaining every metric, table, and refresh cadence
+  - "Clear Filters" button — one-click slicer reset
+  - Raw data export button (CSV/Excel)
 
 ### 2️⃣ Time Analysis
-A deep dive into *when* demand happens.
+*A dedicated view for understanding demand timing.*
 
-- **Global Dynamic Measure** — the same toggle logic from Dashboard 1, applied here to drive every time-based visual
-- **10-Minute Interval Area Chart** — pinpoints peak and off-peak windows within a single day
-- **Day-of-Week Line Chart** — compares weekday vs. weekend demand
-- **Hour × Day Heatmap** — a matrix visual (hours 0–23 vs. Mon–Sun) that instantly surfaces the busiest booking windows across the week
+- **Global Dynamic Measure** — the same selector logic from Dashboard 1, extended to every visual on this page
+- **10-Minute Interval Area Chart** — reveals intraday peak and off-peak windows
+- **Day-of-Week Line Chart** — weekday vs. weekend demand comparison, custom-sorted Monday → Sunday
+- **Hour × Day Heatmap** — a matrix visual (rows: Hour 0–23, columns: Mon–Sun) with color intensity mapped to the selected measure, instantly surfacing the busiest booking windows of the week
 
 ### 3️⃣ Details Tab
-The analyst's playground — full transparency into the underlying data.
+*Record-level transparency for analysts.*
 
-- **Grid Table** with essential trip-level fields
-- **Drill-Through Functionality** — right-click any data point on the other two dashboards to jump straight to its underlying records
-- **"View Full Data" Bookmark** — toggle instantly between filtered drill-through results and the complete dataset
+- **Grid Table** with essential trip-level fields for granular review
+- **Drill-Through Navigation** — right-click any data point on Dashboards 1 or 2 to jump directly to its underlying trip records
+- **"View Full Data" Bookmark** — toggles between the filtered drill-through view and the complete dataset
+
+---
+
+## 🗂️ Data Dictionary
+
+| Field | Description | Type |
+|---|---|---|
+| Booking ID | Unique identifier for each trip | Text/ID |
+| Booking Date & Time | Timestamp of trip request | Date/Time |
+| Pickup Location | Trip origin | Text (linked to Location dim) |
+| Drop-off Location | Trip destination | Text (linked to Location dim via inactive relationship) |
+| Trip Distance | Distance covered | Decimal (km/mi) |
+| Trip Duration | Time taken for trip | Decimal (minutes) |
+| Fare / Booking Value | Revenue generated per trip | Currency |
+| Payment Type | Card / Cash / Wallet / Other | Categorical |
+| Vehicle Type | Category of vehicle used | Categorical |
+| Trip Type | Day / Night | Categorical (derived) |
+
+> *Update this table with your dataset's exact column names once finalized — this reflects the fields implied by the business requirement document.*
 
 ---
 
 ## 🛠️ Technical Highlights
 
-This project goes beyond basic charting — it demonstrates practical, production-style Power BI skills:
+These are the aspects of the build that go beyond basic charting and reflect deliberate data modeling decisions:
 
-| Technique | Why It Matters |
-|---|---|
-| **Disconnected table + dynamic DAX measure** | Lets one set of visuals serve three different analytical purposes without duplicating charts |
-| **Dynamic chart titles** | Visuals communicate exactly what they're showing at any given moment, with zero manual updates |
-| **Activated inactive relationship** (Pickup ↔ Drop-off) | Solves a common Power BI modeling challenge — using `USERELATIONSHIP` to analyze the same location field in two different roles |
-| **Bookmarks + buttons** | Simulates app-like navigation and interactivity (data glossary panel, filter reset, full-data toggle) |
-| **Drill-through pages** | Connects summary-level insight to record-level detail in a single click |
-| **Conditional formatting** | Turns a plain table into an at-a-glance performance grid |
+| Technique | Implementation | Why It Matters |
+|---|---|---|
+| **Disconnected Table for Dynamic Measures** | A standalone table with no model relationships, read via `SELECTEDVALUE()` inside a `SWITCH()` measure | Lets one set of visuals serve three analytical purposes (Bookings/Revenue/Distance) without duplicating charts — cuts report maintenance significantly |
+| **Dynamic Chart Titles** | Measure-driven title strings that update with the slicer selection | Visuals self-document what they're showing — no manual relabeling needed |
+| **Inactive Relationship + `USERELATIONSHIP()`** | Pickup Location relationship kept active by default; Drop-off Location relationship created inactive and activated on-demand inside specific measures | Solves the classic "role-playing dimension" problem (one Location table, two roles) without duplicating the table or bloating the model |
+| **Conditional Formatting on Matrix Visual** | Color scales applied to KPI columns in the Vehicle Type grid | Turns a plain table into an at-a-glance performance view |
+| **Bookmarks + Buttons** | Custom bookmark states tied to blank buttons (Data Details panel, Clear Filters, Full Data toggle) | Simulates app-like navigation and self-service interactivity within a single-page canvas |
+| **Drill-Through Pages** | Configured to accept filter context from visuals across multiple dashboard pages | Bridges summary-level insight and record-level detail in a single click, without needing a separate reporting tool |
+| **Custom Sort Columns** | Day Name sorted by a hidden numeric column (1–7) instead of alphabetically | Ensures charts read Monday → Sunday, not "Friday, Monday, Saturday..." |
+
+---
+
+## 💡 Key Business Insights
+
+*(Fill in with your actual findings once the dashboard is finalized — examples of the type of insight this dashboard is designed to surface:)*
+
+- Peak booking windows cluster around [X–Y] hours, suggesting driver incentives should be weighted toward these slots
+- [Vehicle Type] generates the highest average booking value despite lower trip volume — indicating a premium-pricing opportunity
+- [Location] accounts for a disproportionate share of pickups, signaling where dedicated driver pools would reduce wait times
+- Weekend trip distances are on average [X]% longer than weekday trips, suggesting different trip purposes (leisure vs. commute)
 
 ---
 
 ## 🧰 Tools & Technologies
 
-- **Power BI Desktop** — data modeling, visualization, dashboard design
-- **DAX** — dynamic measures, calculated KPIs, relationship handling
-- **Power Query** — data cleaning and transformation
+- **Power BI Desktop** — data modeling, DAX, visualization, dashboard design
+- **Power Query (M)** — data cleaning, shaping, and transformation
+- **DAX** — dynamic measures, time intelligence, relationship handling
 
 ---
 
@@ -87,28 +209,28 @@ uber-trip-analysis-powerbi/
 ├── README.md
 │
 ├── data/
-│   └── location table.xlsx
-|   └── uber trip details.xlsx
+│   ├── location table.xlsx
+│   └── uber trip details.xlsx
 │
 ├── powerbi/
 │   └── dashboard.pbix
 │
-└── screenshots/
-|   ├── overview-analysis.png
-|   ├── time-analysis.png
-|   └── details.png
+├── screenshots/
+│   ├── overview-analysis.png
+│   ├── time-analysis.png
+│   └── details.png
 │
-├── report/
-│   └── project_report
-
+└── report/
+    └── project_report.md
+```
 
 ---
 
 ## 📸 Dashboard Previews
 
-> _Screenshots to be added_
+> _Screenshots to be added once dashboard is uploaded_
 
-| Overview | Time Analysis | Details Tab |
+| Overview Analysis | Time Analysis | Details Tab |
 |---|---|---|
 | ![Overview](screenshots/overview-analysis.png) | ![Time Analysis](screenshots/time-analysis.png) | ![Details](screenshots/details.png) |
 
@@ -122,7 +244,35 @@ uber-trip-analysis-powerbi/
 
 ---
 
+## ▶️ How to Use This Project
+
+1. Clone or download this repository
+2. Open `powerbi/dashboard.pbix` in **Power BI Desktop** (free download from Microsoft)
+3. If prompted, update the data source path to point to `data/uber trip details.xlsx` and `data/location table.xlsx` on your machine
+4. Explore the three dashboard tabs using the slicers, measure selector, and drill-through right-click menu
+
+---
+
+## 🚀 Future Enhancements
+
+- Automate scheduled data refresh via Power BI Gateway
+- Add a forecasting visual (trend line with confidence interval) for booking volume
+- Introduce Row-Level Security (RLS) for multi-region deployment
+- Build a mobile-optimized report layout for field/operations use
+- Integrate a Power Automate flow for the raw data export button
+
+---
+
 ## 📬 Contact
 
-**Sowmya Sanikommu**
-Feel free to connect for feedback, collaboration, or questions about this project.
+** Sowmya Sanikommu**
+
+*Open to feedback, collaboration, and opportunities in Data Analytics / Business Intelligence.*
+
+---
+
+<div align="center">
+
+⭐ If you found this project useful or interesting, consider giving it a star!
+
+</div>
