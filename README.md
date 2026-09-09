@@ -1,7 +1,6 @@
-<div align="center">
-
 # 🚕 Uber Trip Analysis Dashboard
-### An End-to-End Power BI Business Intelligence Solution
+
+An end-to-end business intelligence solution built in **Power BI**, analyzing Uber trip data to uncover booking trends, revenue patterns, trip efficiency, and location-based demand — enabling stakeholders to make faster, data-driven operational decisions.
 
 ![Power BI](https://img.shields.io/badge/Power%20BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
 ![DAX](https://img.shields.io/badge/DAX-217346?style=for-the-badge&logo=microsoft-excel&logoColor=white)
